@@ -1,3 +1,5 @@
+link: https://colab.research.google.com/github/brox-it/dataweek_brox_24/blob/main/notebooks/02_graph_ds_explore.ipynb
+
 Empowering Knowledge Graphs with
 <img src="images/robot.png" style="width:0.27778in" alt="image" />: A
 Cost-Effective Workflow
