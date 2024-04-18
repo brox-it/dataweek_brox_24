@@ -1,15 +1,19 @@
+import pandas as pd
 import networkx as nx
 from SPARQLWrapper import SPARQLWrapper, JSON
-import pandas as pd
-from graph_tools import GraphFunctions, PlotLib
+from graph_tools import GraphFunctions, PlotLib 
+
 
 
 class ExtractGraph:
-    def __init__(self, endpoint):
-        self.endpoint = endpoint 
-        self.sparql = SPARQLWrapper(endpoint)
-        self.sparql.setReturnFormat(JSON)
+    def __init__(self, EP):
         
+        self.endpoint = EP['endpoint']
+        self.sparql = SPARQLWrapper(self.endpoint)
+        self.sparql.setCredentials(EP['user'], EP['password'])#, realm="SPARQL")
+        self.sparql.setReturnFormat(JSON)
+
+
     def query(self, query):
         self.sparql.setQuery(query)
         return self.sparql.queryAndConvert()
@@ -86,7 +90,7 @@ class GraphLib:
 class QueryLib:
     def __init__(self,):
         self.ns = '''
-                    PREFIX onto:<http://www.ontotext.com/>
+                    PREFIX onto:<https://graphs.brox.de/dwt24/data/>
                     PREFIX dwo:<https://ontologies.brox.de/dwt24/>
 		            PREFIX dcterms:<http://purl.org/dc/terms/>
                 '''
@@ -98,7 +102,9 @@ class QueryLib:
             self.query=f"""
                     {self.name_spaces}
 
-                    SELECT ?JobCategory ?name {{
+                    SELECT ?JobCategory ?name 
+                    FROM <https://graphs.brox.de/dwt24/data/>
+                    WHERE {{
                         ?JobCategory a dwo:JobCategory .
                         ?JobCategory dcterms:title ?name.
                     }}
@@ -111,6 +117,7 @@ class QueryLib:
                 {self.name_spaces}
                 
                 SELECT  ?Skill ?name
+                FROM <https://graphs.brox.de/dwt24/data/>
                 WHERE {{
     				BIND(<{job_entitiy}> AS ?JobCategory).
                     ?Job dwo:belongsToJobCategory ?JobCategory.
@@ -124,4 +131,3 @@ class QueryLib:
             return query
 
 
-    
